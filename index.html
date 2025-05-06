@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Form with Image</title>
+</head>
+
+<body>
+    <div id="products"></div>
+
+    <form id="productForm">
+        Product name:
+        <input id="pname" type="text" required><br>
+        Price:
+        <input id="price" type="text" required><br>
+        Category:
+        <input id="category" type="text" required><br>
+        Stock:
+        <input id="stock" type="text" required><br>
+        Image:
+        <input id="image" type="file" accept="image/*" required><br><br>
+        <button type="submit">Add to product</button>
+    </form>
+
+    <script>
+        const cart = [];
+
+        function addproduct(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('pname').value;
+            const category = document.getElementById('category').value;
+            const price = document.getElementById('price').value;
+            const stock = document.getElementById('stock').value;
+            const imageFile = document.getElementById('image').files[0];
+
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imageURL = e.target.result;
+                    console.log(imageURL)
+                    const product = { name, category, price, stock, imageURL };
+                    cart.push(product);
+                    displayProducts();
+                };
+                reader.readAsDataURL(imageFile); // convert image to base64
+            }
+        }
+
+        function displayProducts() {
+            const container = document.getElementById('products');
+            container.innerHTML = cart.map(p => `
+        <div style="margin-bottom: 15px;">
+          <strong>${p.name}</strong> - ${p.category} - $${p.price} - Stock: ${p.stock}<br>
+          <img src="${p.imageURL}" alt="${p.name}" width="100">
+        </div>
+      `).join('');
+        }
+
+        document.getElementById('productForm').addEventListener('submit', addproduct);
+    </script>
+</body>
+
+</html>
